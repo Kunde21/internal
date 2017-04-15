@@ -441,3 +441,78 @@ func BenchmarkLLinfNorm1000(t *testing.B)   { benchLinfNorm(naiveLinfNorm, 1000,
 func BenchmarkLLinfNorm10000(t *testing.B)  { benchLinfNorm(naiveLinfNorm, 10000, t) }
 func BenchmarkLLinfNorm100000(t *testing.B) { benchLinfNorm(naiveLinfNorm, 100000, t) }
 func BenchmarkLLinfNorm500000(t *testing.B) { benchLinfNorm(naiveLinfNorm, 500000, t) }
+
+func benchMul(f func(a, b []float64), sz int, t *testing.B) {
+	a, b := x[:sz], y[:sz]
+	for i := 0; i < t.N; i++ {
+		f(a, b)
+	}
+}
+
+var naiveMul = func(a, b []float64) {
+	for i, v := range b {
+		a[i] /= v
+	}
+}
+
+func BenchmarkMul1(t *testing.B)      { benchMul(Mul, 1, t) }
+func BenchmarkMul2(t *testing.B)      { benchMul(Mul, 2, t) }
+func BenchmarkMul3(t *testing.B)      { benchMul(Mul, 3, t) }
+func BenchmarkMul4(t *testing.B)      { benchMul(Mul, 4, t) }
+func BenchmarkMul5(t *testing.B)      { benchMul(Mul, 5, t) }
+func BenchmarkMul10(t *testing.B)     { benchMul(Mul, 10, t) }
+func BenchmarkMul100(t *testing.B)    { benchMul(Mul, 100, t) }
+func BenchmarkMul1000(t *testing.B)   { benchMul(Mul, 1000, t) }
+func BenchmarkMul10000(t *testing.B)  { benchMul(Mul, 10000, t) }
+func BenchmarkMul100000(t *testing.B) { benchMul(Mul, 100000, t) }
+func BenchmarkMul500000(t *testing.B) { benchMul(Mul, 500000, t) }
+
+func BenchmarkLMul1(t *testing.B)      { benchMul(naiveMul, 1, t) }
+func BenchmarkLMul2(t *testing.B)      { benchMul(naiveMul, 2, t) }
+func BenchmarkLMul3(t *testing.B)      { benchMul(naiveMul, 3, t) }
+func BenchmarkLMul4(t *testing.B)      { benchMul(naiveMul, 4, t) }
+func BenchmarkLMul5(t *testing.B)      { benchMul(naiveMul, 5, t) }
+func BenchmarkLMul10(t *testing.B)     { benchMul(naiveMul, 10, t) }
+func BenchmarkLMul100(t *testing.B)    { benchMul(naiveMul, 100, t) }
+func BenchmarkLMul1000(t *testing.B)   { benchMul(naiveMul, 1000, t) }
+func BenchmarkLMul10000(t *testing.B)  { benchMul(naiveMul, 10000, t) }
+func BenchmarkLMul100000(t *testing.B) { benchMul(naiveMul, 100000, t) }
+func BenchmarkLMul500000(t *testing.B) { benchMul(naiveMul, 500000, t) }
+
+func benchMulTo(f func(dst, a, b []float64) []float64, sz int, t *testing.B) {
+	dst, a, b := z[:sz], x[:sz], y[:sz]
+	for i := 0; i < t.N; i++ {
+		f(dst, a, b)
+	}
+}
+
+var naiveMulTo = func(dst, s, t []float64) []float64 {
+	for i, v := range s {
+		dst[i] = v / t[i]
+	}
+	return dst
+}
+
+func BenchmarkMulTo1(t *testing.B)      { benchMulTo(MulTo, 1, t) }
+func BenchmarkMulTo2(t *testing.B)      { benchMulTo(MulTo, 2, t) }
+func BenchmarkMulTo3(t *testing.B)      { benchMulTo(MulTo, 3, t) }
+func BenchmarkMulTo4(t *testing.B)      { benchMulTo(MulTo, 4, t) }
+func BenchmarkMulTo5(t *testing.B)      { benchMulTo(MulTo, 5, t) }
+func BenchmarkMulTo10(t *testing.B)     { benchMulTo(MulTo, 10, t) }
+func BenchmarkMulTo100(t *testing.B)    { benchMulTo(MulTo, 100, t) }
+func BenchmarkMulTo1000(t *testing.B)   { benchMulTo(MulTo, 1000, t) }
+func BenchmarkMulTo10000(t *testing.B)  { benchMulTo(MulTo, 10000, t) }
+func BenchmarkMulTo100000(t *testing.B) { benchMulTo(MulTo, 100000, t) }
+func BenchmarkMulTo500000(t *testing.B) { benchMulTo(MulTo, 500000, t) }
+
+func BenchmarkLMulTo1(t *testing.B)      { benchMulTo(naiveMulTo, 1, t) }
+func BenchmarkLMulTo2(t *testing.B)      { benchMulTo(naiveMulTo, 2, t) }
+func BenchmarkLMulTo3(t *testing.B)      { benchMulTo(naiveMulTo, 3, t) }
+func BenchmarkLMulTo4(t *testing.B)      { benchMulTo(naiveMulTo, 4, t) }
+func BenchmarkLMulTo5(t *testing.B)      { benchMulTo(naiveMulTo, 5, t) }
+func BenchmarkLMulTo10(t *testing.B)     { benchMulTo(naiveMulTo, 10, t) }
+func BenchmarkLMulTo100(t *testing.B)    { benchMulTo(naiveMulTo, 100, t) }
+func BenchmarkLMulTo1000(t *testing.B)   { benchMulTo(naiveMulTo, 1000, t) }
+func BenchmarkLMulTo10000(t *testing.B)  { benchMulTo(naiveMulTo, 10000, t) }
+func BenchmarkLMulTo100000(t *testing.B) { benchMulTo(naiveMulTo, 100000, t) }
+func BenchmarkLMulTo500000(t *testing.B) { benchMulTo(naiveMulTo, 500000, t) }

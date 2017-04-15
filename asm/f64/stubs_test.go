@@ -687,3 +687,141 @@ func TestLinfNorm(t *testing.T) {
 		}
 	}
 }
+
+func TestMul(t *testing.T) {
+	var src_gd, dst_gd float64 = -1, 0.5
+	for j, v := range []struct {
+		dst, src, expect []float64
+	}{
+		{
+			dst:    []float64{1},
+			src:    []float64{1},
+			expect: []float64{1},
+		},
+		{
+			dst:    []float64{nan},
+			src:    []float64{nan},
+			expect: []float64{nan},
+		},
+		{
+			dst:    []float64{1, 2, 3, 4},
+			src:    []float64{1, 2, 3, 4},
+			expect: []float64{1, 4, 9, 16},
+		},
+		{
+			dst:    []float64{1, 2, 3, 4, 2, 4, 6, 8},
+			src:    []float64{1, 2, 3, 4, 1, 2, 3, 4},
+			expect: []float64{1, 4, 9, 16, 2, 8, 18, 32},
+		},
+		{
+			dst:    []float64{2, 4, 6},
+			src:    []float64{1, 2, 3},
+			expect: []float64{2, 8, 18},
+		},
+		{
+			dst:    []float64{0, 0, 0, 0},
+			src:    []float64{1, 2, 3},
+			expect: []float64{0, 0, 0},
+		},
+		{
+			dst:    []float64{nan, 1, nan, 1, 0},
+			src:    []float64{1, 1, nan, 1, 1},
+			expect: []float64{nan, 1, nan, 1, 0},
+		},
+		{
+			dst:    []float64{inf, 4, nan, -inf, 9},
+			src:    []float64{inf, 4, nan, -inf, 3},
+			expect: []float64{inf, 16, nan, inf, 27},
+		},
+	} {
+		sg_ln, dg_ln := 4+j%2, 4+j%3
+		v.src, v.dst = guardVector(v.src, src_gd, sg_ln), guardVector(v.dst, dst_gd, dg_ln)
+		src, dst := v.src[sg_ln:len(v.src)-sg_ln], v.dst[dg_ln:len(v.dst)-dg_ln]
+		Mul(dst, src)
+		for i := range v.expect {
+			if !same(dst[i], v.expect[i]) {
+				t.Errorf("Test %d Mul error at %d Got: %v Expected: %v", j, i, dst[i], v.expect[i])
+			}
+		}
+		if !isValidGuard(v.src, src_gd, sg_ln) {
+			t.Errorf("Test %d Guard violated in src vector %v %v", j, v.src[:sg_ln], v.src[len(v.src)-sg_ln:])
+		}
+		if !isValidGuard(v.dst, dst_gd, dg_ln) {
+			t.Errorf("Test %d Guard violated in dst vector %v %v", j, v.dst[:dg_ln], v.dst[len(v.dst)-dg_ln:])
+		}
+	}
+}
+
+func TestMulTo(t *testing.T) {
+	var dst_gd, x_gd, y_gd float64 = -1, 0.5, 0.25
+	for j, v := range []struct {
+		dst, x, y, expect []float64
+	}{
+		{
+			dst:    []float64{1},
+			x:      []float64{1},
+			y:      []float64{1},
+			expect: []float64{1},
+		},
+		{
+			dst:    []float64{1},
+			x:      []float64{nan},
+			y:      []float64{nan},
+			expect: []float64{nan},
+		},
+		{
+			dst:    []float64{-2, -2, -2},
+			x:      []float64{1, 2, 3},
+			y:      []float64{1, 2, 3},
+			expect: []float64{1, 4, 9},
+		},
+		{
+			dst:    []float64{0, 0, 0},
+			x:      []float64{2, 4, 6},
+			y:      []float64{1, 2, 3, 4},
+			expect: []float64{2, 8, 18},
+		},
+		{
+			dst:    []float64{-1, -1, -1},
+			x:      []float64{0, 0, 0},
+			y:      []float64{1, 2, 3},
+			expect: []float64{0, 0, 0},
+		},
+		{
+			dst:    []float64{inf, inf, inf, inf, inf},
+			x:      []float64{nan, 1, nan, 1, 0},
+			y:      []float64{1, 1, nan, 1, 1},
+			expect: []float64{nan, 1, nan, 1, 0},
+		},
+		{
+			dst:    []float64{0, 0, 0, 0, 0},
+			x:      []float64{inf, 4, nan, -inf, 9},
+			y:      []float64{inf, 4, nan, -inf, 3},
+			expect: []float64{inf, 16, nan, inf, 27},
+		},
+	} {
+		xg_ln, yg_ln := 4+j%2, 4+j%3
+		v.y, v.x = guardVector(v.y, y_gd, yg_ln), guardVector(v.x, x_gd, xg_ln)
+		y, x := v.y[yg_ln:len(v.y)-yg_ln], v.x[xg_ln:len(v.x)-xg_ln]
+		v.dst = guardVector(v.dst, dst_gd, xg_ln)
+		dst := v.dst[xg_ln : len(v.dst)-xg_ln]
+		ret := MulTo(dst, x, y)
+		for i := range v.expect {
+			if !same(ret[i], v.expect[i]) {
+				t.Errorf("Test %d MulTo error at %d Got: %v Expected: %v", j, i, ret[i], v.expect[i])
+			}
+			if !same(ret[i], dst[i]) {
+				t.Errorf("Test %d MulTo ret/dst mismatch %d Ret: %v Dst: %v", j, i, ret[i], dst[i])
+			}
+		}
+		if !isValidGuard(v.y, y_gd, yg_ln) {
+			t.Errorf("Test %d Guard violated in y vector %v %v", j, v.y[:yg_ln], v.y[len(v.y)-yg_ln:])
+		}
+		if !isValidGuard(v.x, x_gd, xg_ln) {
+			t.Errorf("Test %d Guard violated in x vector %v %v", j, v.x[:xg_ln], v.x[len(v.x)-xg_ln:])
+		}
+		if !isValidGuard(v.dst, dst_gd, xg_ln) {
+			t.Errorf("Test %d Guard violated in dst vector %v %v", j, v.dst[:xg_ln], v.dst[len(v.dst)-xg_ln:])
+		}
+	}
+}
