@@ -91,3 +91,16 @@ func LinfNorm(s, t []float64) float64 {
 	}
 	return norm
 }
+
+func Mul(dst, s []float64) {
+	for i, v := range s {
+		dst[i] *= v
+	}
+}
+
+func MulTo(dst, s, t []float64) []float64 {
+	for i, v := range s {
+		dst[i] = v * t[i]
+	}
+	return dst
+}

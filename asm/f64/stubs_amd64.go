@@ -38,6 +38,10 @@ func L1Norm(s, t []float64) float64
 
 func LinfNorm(s, t []float64) float64
 
+func Mul(dst, s []float64)
+
+func MulTo(dst, x, y []float64) []float64
+
 func ScalUnitary(alpha float64, x []float64)
 
 func ScalUnitaryTo(dst []float64, alpha float64, x []float64)
