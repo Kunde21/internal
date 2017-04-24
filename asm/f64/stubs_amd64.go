@@ -42,6 +42,10 @@ func Mul(dst, s []float64)
 
 func MulTo(dst, x, y []float64) []float64
 
+func MulInc(dst, src []float64, n, incDst, incSrc, iDst, iSrc int)
+
+func MulIncTo(dst, x, y []float64, n, incDst, incX, incY, iDst, ix, iy int) []float64
+
 func ScalUnitary(alpha float64, x []float64)
 
 func ScalUnitaryTo(dst []float64, alpha float64, x []float64)

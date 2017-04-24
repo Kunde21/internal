@@ -92,15 +92,56 @@ func LinfNorm(s, t []float64) float64 {
 	return norm
 }
 
+// Mul is
+// for i, v := range s {
+// 	dst[i] *= v
+// }
 func Mul(dst, s []float64) {
 	for i, v := range s {
 		dst[i] *= v
 	}
 }
 
+// MulTo is
+// for i, v := range s {
+// 	dst[i] = v * t[i]
+// }
+// return dst
 func MulTo(dst, s, t []float64) []float64 {
 	for i, v := range s {
 		dst[i] = v * t[i]
+	}
+	return dst
+}
+
+// MulInc is
+// for i := 0; i < n; i++ {
+// 	dst[iDst] *= src[iSrc]
+// 	iDst += incDst
+// 	iSrc += incSrc
+// }
+func MulInc(dst, src []float64, n, incDst, incSrc, iDst, iSrc int) {
+	for i := 0; i < n; i++ {
+		dst[iDst] *= src[iSrc]
+		iDst += incDst
+		iSrc += incSrc
+	}
+}
+
+// MulIncTo is
+// for i := 0; i < n; i++ {
+// 	dst[iDst] = x[ix] * y[iy]
+// 	iDst += incDst
+// 	ix += incX
+// 	iy += incY
+// }
+// return dst
+func MulIncTo(dst, x, y []float64, n, incDst, incX, incY, iDst, ix, iy int) []float64 {
+	for i := 0; i < n; i++ {
+		dst[iDst] = x[ix] * y[iy]
+		iDst += incDst
+		ix += incX
+		iy += incY
 	}
 	return dst
 }
