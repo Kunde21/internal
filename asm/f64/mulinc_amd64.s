@@ -1,4 +1,4 @@
-// Copyright ©2015 The gonum Authors. All rights reserved.
+// Copyright ©2017 The gonum Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -47,12 +47,6 @@ mul_loop: // do {
 	MOVSD (SRC)(INC_SRC*1), X1
 	MOVSD (SRC)(INC_SRC*2), X2
 	MOVSD (SRC)(INCx3_SRC*1), X3
-
-	//	LEAQ (SRC)(INC_SRC*4), SRC
-	//	MOVSD (SRC), X0
-	//	MOVSD (SRC)(INC_SRC*1), X1
-	//	MOVSD (SRC)(INC_SRC*2), X2
-	//	MOVSD (SRC)(INCx3_SRC*1), X3
 
 	MULSD (DST), X0              // X_i *= dst[i*incDst]
 	MULSD (DST)(INC_DST*1), X1
